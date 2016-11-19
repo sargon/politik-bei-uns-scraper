@@ -884,7 +884,7 @@ class ScraperAllRis(object):
         file_obj.content = file_file.content
         # catch strange magic exception
         try:
-            file.mimetype = magic.from_buffer(file_obj.content, mime=True)
+            file_obj.mimetype = magic.from_buffer(file_obj.content, mime=True)
         except magic.MagicException:
             logging.warn("Warning: unknown magic error at file %s from %s",
                          file_obj.originalId, file_url)
