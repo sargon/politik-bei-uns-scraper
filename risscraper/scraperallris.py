@@ -38,6 +38,7 @@ import logging
 import re
 import sys
 import time
+import unicodedata
 
 from lxml import etree, html
 from lxml.cssselect import CSSSelector
@@ -236,7 +237,7 @@ class ScraperAllRis(object):
         """ Find meetings within a given time frame and add them to the meeting
         queue.
         """
-        meeting_find_url = (self.config['scraper']['allris']['meeting_find_url']
+        meeting_find_url = ("%s/si010_j.asp?kaldatvonbis=%s-%s&selfaction=ws&template=xml&xsl=sikal1"
                             % (self.config['scraper']['base_url'],
                                start_date.strftime("%d.%m.%Y"),
                                end_date.strftime("%d.%m.%Y")))
@@ -296,7 +297,7 @@ class ScraperAllRis(object):
                 response = self.get_url(url)
                 if not url:
                     return
-                tree = html.fromstring(response.text)
+                tree = html.fromstring(unicodedata.normalize('NFKD',response.text).encode('ascii','ignore'))
 
                 memberships = []
                 person = Person(originalId=person_id)
@@ -604,7 +605,7 @@ class ScraperAllRis(object):
                                  paper_id, paper_url)
                     return
                 text = response.text
-                doc = html.fromstring(text)
+                doc = html.fromstring(unicodedata.normalize('NFKD',text).encode('ascii','ignore'))
                 data = {}
 
                 # Beratungsfolge-Table checken
